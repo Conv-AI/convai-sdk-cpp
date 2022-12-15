@@ -12,17 +12,17 @@
 
 #include "convai.grpc.pb.h"
 
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::ClientReader;
-using grpc::ClientReaderWriter;
-using grpc::ClientWriter;
-using grpc::Status;
-using service::ConvaiService;
-using service::GetResponseRequest;
-using service::GetResponseResponse;
-
 namespace convai_sdk {
+
+using ::grpc::Channel;
+using ::grpc::ClientContext;
+using ::grpc::ClientReader;
+using ::grpc::ClientReaderWriter;
+using ::grpc::ClientWriter;
+using ::grpc::Status;
+using ::service::ConvaiService;
+using ::service::GetResponseRequest;
+using ::service::GetResponseResponse;
 
 // This class is a wrapper around the Convai GetResponse API.
 // Each interaction is meant to serve a user query and give back a response. To

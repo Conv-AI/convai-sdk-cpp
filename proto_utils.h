@@ -7,10 +7,10 @@
 #include <sstream>
 #include <string>
 
-using service::GetResponseRequest;
-
 namespace convai_sdk {
 namespace proto_util {
+
+using ::service::GetResponseRequest;
 
 // Parses the file content in `file_path` into GetResponseConfig proto and
 // returns the proto object.
