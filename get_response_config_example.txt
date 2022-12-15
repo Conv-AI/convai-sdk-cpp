@@ -1,0 +1,25 @@
+character_id: "<character_id>"
+api_key: "<api_key>"
+audio_config {
+    sample_rate_hertz: 44100
+}
+action_config {
+    actions: "Open"
+    actions: "Close"
+
+    objects {
+        name: "Door"
+        description: "A door that can be opened or closed"
+    }
+
+    characters {
+        name: "AI Character"
+        bio: "A valet who can open and close doors"
+    }
+    characters {
+        name: "User"
+        bio: "A person who likes doors being opened and closed for them."
+    }
+
+    classification: "multistep"
+}
