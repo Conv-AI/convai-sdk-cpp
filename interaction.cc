@@ -2,11 +2,11 @@
 
 namespace convai_sdk {
 
-static constexpr char CONVAI_API_ENDPOINT[] = "34.168.121.146:9175";
+static constexpr char CONVAI_API_ENDPOINT[] = "stream.convai.com";
 
 void Interaction::Start(std::function<void(GetResponseResponse)> res_func) {
-  rpc_channel_ = grpc::CreateChannel(CONVAI_API_ENDPOINT,
-                                     grpc::InsecureChannelCredentials());
+  rpc_channel_ = grpc::CreateChannel(
+      CONVAI_API_ENDPOINT, grpc::SslCredentials(grpc::SslCredentialsOptions()));
   stub_ = ConvaiService::NewStub(rpc_channel_);
   stream_ = std::shared_ptr<
       ClientReaderWriter<GetResponseRequest, GetResponseResponse>>(

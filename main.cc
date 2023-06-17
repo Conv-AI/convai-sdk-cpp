@@ -25,33 +25,54 @@ int main() {
     std::cout << "\n1. Press N to start new round of Conversation."
               << "\n2. Press Q to exit.\n";
     std::cin >> c;
-    if (c == 'q') {
+    if (c == 'q' || c == 'Q') {
       break;
     }
     Audio audio_in;
     Audio audio_out;
     Interaction interaction(get_response_config);
 
+    std::string transcript = "";
+    std::string temp_transcript = "";
     interaction.Start(
-        /*response_callback=*/[&audio_out,
-                               &get_response_config](GetResponseResponse resp) {
-          if (resp.has_action_response()) {
-            std::cout << "New Action Message: ";
+        /*response_callback=*/[&audio_out, &get_response_config, &transcript,
+                               &temp_transcript](GetResponseResponse resp) {
+          if (resp.has_user_query()) {
+            auto user_query = resp.user_query();
+            if (user_query.is_final()) {
+              transcript += user_query.text_data();
+              temp_transcript = "";
+            } else {
+              temp_transcript = user_query.text_data();
+            }
+            std::cout << "You: " << transcript << temp_transcript;
+            if (!user_query.end_of_response()) {
+              std::cout << '\r';
+              std::cout.flush();
+            } else {
+              std::cout << std::endl;
+              std::cout << "Bot: ";
+            }
+          } else if (resp.has_action_response()) {
+            std::cout << std::endl << "Action: ";
             std::cout << resp.action_response().action();
             std::cout << std::endl;
+            std::cout << "Bot: ";
           } else if (resp.has_audio_response()) {
             // Set session id for all future interactions in this
             // conversation.
             if (get_response_config.session_id() == "") {
               get_response_config.set_session_id(resp.session_id());
             }
-            std::cout << "New Audio Message: ";
-            std::cout << resp.audio_response().text_data();
-            std::cout << std::endl;
+            std::cout << resp.audio_response().text_data() << std::endl;
+            if (resp.audio_response().end_of_response()) {
+              std::cout << std::endl;
+            }
 
             if (resp.audio_response().audio_data() != "") {
               if (!audio_out.Started()) {
-                audio_out.Start();
+                audio_out.Start(
+                    resp.audio_response().audio_config().sample_rate_hertz());
               }
               // Skip the wav header in the response. This is currently
               // hardcoded and may be changed in the future.
@@ -78,7 +99,6 @@ int main() {
       interaction.SendAudio(audio_data, length);
     }
     audio_in.Close();
-    std::cout << "Stopped Recording: " << std::endl;
     auto status = interaction.Stop();
     if (audio_out.Started()) {
       audio_out.Close();

@@ -3,22 +3,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 
-new_git_repository(
-    name = "dr_libs",
-    build_file_content = """
-load("@rules_cc//cc:defs.bzl", "cc_library")
-package(default_visibility = ["//visibility:public"])
-licenses(["notice"])
-cc_library(
-    name = "dr_wav",
-    hdrs = ["dr_wav.h"],
-)
-    """,
-    commit = "4aff56541f5e6bd4b74053a0d5c9e6156e736059",
-    remote = "https://github.com/mackron/dr_libs.git",
-    shallow_since = "1641552114 +1000",
-)
-
 http_archive(
     name = "rules_proto",
     sha256 = "80d3a4ec17354cccc898bfe32118edd934f851b03029d63ef3fc7c8663a7415c",

@@ -18,7 +18,7 @@ public:
   Audio() = default;
 
   // Initializes portaudio stream.
-  void Start();
+  void Start(int sampling_rate = SAMPLING_RATE);
 
   // Returns true if the audio stream has been started, false otherwise.
   bool Started() const { return started_; }

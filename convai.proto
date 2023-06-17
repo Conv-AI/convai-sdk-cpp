@@ -8,6 +8,7 @@ service ConvaiService {
   rpc SpeechToText(stream STTRequest) returns (stream STTResponse) {}
 
   rpc GetResponse(stream GetResponseRequest) returns (stream GetResponseResponse) {}
+  rpc GetResponseSingle(GetResponseRequestSingle) returns (stream GetResponseResponse) {}
 }
 
 message AudioConfig {
@@ -16,19 +17,13 @@ message AudioConfig {
 
 message ActionConfig {
   message Character {
-    // Name of the character in the scene.
     string name = 1;
-    // A short bio of the character.
     string bio = 2;
   }
   message Object {
-    // Name of the object.
     string name = 1;
-    // A short description of the object, often including possible actions that
-    // can be done on it.
     string description = 2;
   }
-  // List of possible actions that can be performed by the character.
   repeated string actions = 1;
   repeated Character characters = 2;
   repeated Object objects = 3;
@@ -54,6 +49,8 @@ message GetResponseRequest {
     string session_id = 4;
     AudioConfig audio_config = 5;
     ActionConfig action_config = 6;
+    string speaker = 7;
+    string language_code = 8;
   }
   message GetResponseData {
     oneof input_type {
@@ -67,21 +64,34 @@ message GetResponseRequest {
   }
 }
 
+message GetResponseRequestSingle {
+  GetResponseRequest response_config = 1;
+  GetResponseRequest response_data = 2;
+}
+
 message GetResponseResponse {
   message AudioResponse {
     bytes audio_data = 1;
     AudioConfig audio_config = 2;
     string text_data = 3;
+    bool end_of_response = 4;
   }
 
   message ActionResponse {
     string action = 1;
+  }
+
+  message UserTranscript {
+    string text_data = 1;
+    bool is_final = 2;
+    bool end_of_response = 3;
   }
   string session_id = 1;
   oneof response_type {
     ActionResponse action_response = 2;
     AudioResponse audio_response = 3;
     string debug_log = 4;
+    UserTranscript user_query = 5;
   }
 }
 

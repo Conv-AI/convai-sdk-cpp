@@ -3,7 +3,7 @@
 
 namespace convai_sdk {
 
-void Audio::Start() {
+void Audio::Start(int sampling_rate) {
   auto err = Pa_Initialize();
   if (err != paNoError) {
     std::cout << "Error initializing port audio. Exiting.";
@@ -27,7 +27,7 @@ void Audio::Start() {
   output_parameters_.hostApiSpecificStreamInfo = NULL;
 
   err = Pa_OpenStream(&stream_, &input_parameters_, &output_parameters_,
-                      SAMPLING_RATE, FRAMES_PER_BUFFER,
+                      sampling_rate, FRAMES_PER_BUFFER,
                       paClipOff, /* we won't output out of range samples so
                                     don't bother clipping them */
                       NULL,      /* no callback, use blocking API */
